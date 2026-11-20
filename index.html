@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0b1020" />
+    <title>Planta KPI · Control de producción</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" id="sidebar">
+        <div class="brand-lockup">
+          <div class="brand-mark"><span></span><span></span><span></span></div>
+          <div>
+            <p class="eyebrow">operaciones</p>
+            <h1>PLANTA <strong>KPI</strong></h1>
+          </div>
+        </div>
+
+        <div class="sidebar-section-label">Vista general</div>
+        <nav class="main-nav" aria-label="Navegación principal">
+          <button class="nav-item active" data-view="overview"><span class="nav-icon">◈</span><span>Portada</span><span class="nav-dot"></span></button>
+          <button class="nav-item" data-view="machines"><span class="nav-icon">▦</span><span>Máquinas</span><span class="nav-count">8</span></button>
+          <button class="nav-item" data-view="quality"><span class="nav-icon">◇</span><span>Calidad</span></button>
+          <button class="nav-item" data-view="oven"><span class="nav-icon">◒</span><span>Hornos y cortes</span></button>
+        </nav>
+
+        <div class="sidebar-divider"></div>
+        <div class="sidebar-section-label">Periodo activo</div>
+        <div class="period-card">
+          <div class="period-top"><span class="status-dot"></span><span>Datos sincronizados</span></div>
+          <strong>19 NOV 2026</strong>
+          <span class="period-meta">Turno 1 · 06:00—22:00</span>
+        </div>
+        <div class="sidebar-spacer"></div>
+        <div class="sidebar-footer">
+          <div class="sync-line"><span class="status-dot"></span><span>Última actualización</span></div>
+          <strong>20 nov · 08:42</strong>
+          <button class="ghost-button" id="refreshData"><span>↻</span> Simular actualización</button>
+        </div>
+      </aside>
+
+      <main class="main-content">
+        <header class="topbar">
+          <button class="mobile-menu" id="mobileMenu" aria-label="Abrir navegación">☰</button>
+          <div class="breadcrumb"><span>Operaciones</span><span class="crumb-separator">/</span><strong id="breadcrumbCurrent">Portada gerencial</strong></div>
+          <div class="topbar-actions">
+            <span class="live-pill"><span class="pulse-dot"></span> Demo en vivo</span>
+            <button class="icon-button" title="Notificaciones" aria-label="Notificaciones">◌<span class="notification-dot"></span></button>
+            <div class="user-chip"><span class="avatar">AC</span><span class="user-name">Alvaro Coronado</span><span class="chevron">⌄</span></div>
+          </div>
+        </header>
+
+        <div class="page-wrap">
+          <section class="view active" id="overviewView">
+            <div class="hero-row">
+              <div>
+                <p class="kicker">Resumen operativo / <span>19 noviembre 2026</span></p>
+                <h2>Control de planta<span class="accent-dot">.</span></h2>
+                <p class="hero-copy">Lectura rápida de producción, disponibilidad y calidad para las ocho máquinas registradas.</p>
+              </div>
+              <div class="hero-actions">
+                <button class="secondary-button" id="downloadBtn"><span>↓</span> Descargar resumen</button>
+                <div class="date-control"><span class="calendar-icon">▣</span><span>19 Nov 2026</span><span class="chevron">⌄</span></div>
+              </div>
+            </div>
+
+            <div class="filter-bar">
+              <div class="filter-label"><span class="filter-icon">≡</span><span>Filtros</span></div>
+              <label class="filter-field"><span>Máquina</span><select id="machineFilter"><option value="all">Todas las máquinas</option></select></label>
+              <label class="filter-field"><span>Área</span><select id="areaFilter"><option value="all">Toda la planta</option><option value="Corte">Corte</option><option value="Proceso">Proceso</option><option value="Hornos">Hornos</option></select></label>
+              <label class="filter-field"><span>Turno</span><select id="shiftFilter"><option value="all">Todos los turnos</option><option value="1">Turno 1</option><option value="2">Turno 2</option></select></label>
+              <button class="clear-filter" id="clearFilters">Limpiar</button>
+            </div>
+
+            <div class="section-heading"><div><p class="section-overline">Lectura ejecutiva</p><h3>Indicadores del día</h3></div><span class="data-note"><span class="green-dot"></span> 1,120 registros procesados</span></div>
+            <div class="kpi-grid" id="kpiGrid"></div>
+
+            <div class="content-grid main-grid">
+              <section class="panel performance-panel">
+                <div class="panel-header"><div><p class="section-overline">Comparativo por máquina</p><h3>Desempeño de planta</h3></div><button class="text-button" data-view-target="machines">Ver detalle <span>→</span></button></div>
+                <div class="table-wrap"><table class="performance-table"><thead><tr><th>Máquina</th><th>Producción</th><th>Tiempo muerto</th><th>Eficiencia</th><th>OEE</th><th>Estado</th></tr></thead><tbody id="performanceBody"></tbody></table></div>
+                <div class="table-footer"><span><span class="mini-legend green"></span>En objetivo</span><span><span class="mini-legend amber"></span>Atención</span><span><span class="mini-legend red"></span>Crítico</span><span class="table-foot-note">Ordenado por OEE</span></div>
+              </section>
+              <section class="panel insight-panel">
+                <div class="panel-header"><div><p class="section-overline">Lecturas del sistema</p><h3>Hallazgos de hoy</h3></div><span class="sparkle">✦</span></div>
+                <div class="insight-list" id="insightList"></div>
+                <button class="outline-wide" data-view-target="quality">Explorar calidad <span>→</span></button>
+              </section>
+            </div>
+
+            <div class="content-grid chart-grid">
+              <section class="panel chart-panel large-chart"><div class="panel-header"><div><p class="section-overline">Rendimiento</p><h3>OEE vs. eficiencia</h3></div><div class="chart-legend"><span><i class="legend-line cyan"></i> OEE</span><span><i class="legend-line lime"></i> Eficiencia</span></div></div><div class="chart-box"><canvas id="oeeChart"></canvas></div></section>
+              <section class="panel chart-panel"><div class="panel-header"><div><p class="section-overline">Pérdidas</p><h3>Tiempo muerto</h3></div><span class="chart-period">Horas</span></div><div class="chart-box doughnut-box"><canvas id="downtimeChart"></canvas><div class="doughnut-center"><strong id="downtimeTotal">5.8</strong><span>hrs total</span></div></div><div class="cause-list" id="causeList"></div></section>
+            </div>
+
+            <section class="panel quick-panel"><div class="quick-copy"><p class="section-overline">Siguiente paso</p><h3>Profundiza por máquina</h3><p>Revisa el ciclo, los rechazos y el detalle productivo de cualquier línea.</p></div><div class="quick-machines" id="quickMachines"></div><button class="quick-arrow" data-view-target="machines">→</button></section>
+          </section>
+
+          <section class="view" id="machinesView">
+            <div class="hero-row compact-hero"><div><p class="kicker">Operación / <span>detalle por activo</span></p><h2>Máquinas<span class="accent-dot">.</span></h2><p class="hero-copy">Selecciona una máquina para revisar sus ciclos, pérdidas y calidad.</p></div><div class="machine-selector-wrap"><label for="detailMachine">Activo seleccionado</label><select id="detailMachine"></select></div></div>
+            <div class="machine-tabs" id="machineTabs"></div>
+            <div id="machineDetailContent"></div>
+          </section>
+
+          <section class="view" id="qualityView">
+            <div class="hero-row compact-hero"><div><p class="kicker">Calidad / <span>rechazos y reprocesos</span></p><h2>Calidad operacional<span class="accent-dot">.</span></h2><p class="hero-copy">Dónde se está perdiendo área, peso y tiempo de producción.</p></div><div class="quality-score"><span>FTQ del día</span><strong>95.8%</strong><small>+1.4 pts vs. promedio</small></div></div>
+            <div class="kpi-grid quality-kpis" id="qualityKpis"></div>
+            <div class="content-grid quality-grid"><section class="panel chart-panel large-chart"><div class="panel-header"><div><p class="section-overline">Pareto de defectos</p><h3>Principales causas de rechazo</h3></div><span class="chart-period">53 eventos</span></div><div class="chart-box"><canvas id="rejectionChart"></canvas></div></section><section class="panel"><div class="panel-header"><div><p class="section-overline">Distribución</p><h3>Rechazos por máquina</h3></div></div><div class="rejection-machine-list" id="rejectionMachineList"></div></section></div>
+            <section class="panel rejection-table-panel"><div class="panel-header"><div><p class="section-overline">Últimos registros</p><h3>Detalle de rechazos</h3></div><button class="secondary-button small">Exportar CSV <span>↓</span></button></div><div class="table-wrap"><table class="performance-table reject-table"><thead><tr><th>Máquina</th><th>Pedido</th><th>Razón</th><th>Causa</th><th>Área afectada</th><th>Tipo</th></tr></thead><tbody><tr><td><span class="machine-name"><span class="machine-glyph duo"></span>Duo-vent</span></td><td class="mono">287819</td><td>Reproceso</td><td>Tallones</td><td>3.49 m²</td><td><span class="tag amber">Reproceso</span></td></tr><tr><td><span class="machine-name"><span class="machine-glyph horno"></span>Horno 2</span></td><td class="mono">288128</td><td>Rechazo</td><td>Mancha de pintura</td><td>5.00 m²</td><td><span class="tag red">Rechazo</span></td></tr><tr><td><span class="machine-name"><span class="machine-glyph corte"></span>Corte 2</span></td><td class="mono">288353</td><td>Reproceso</td><td>SelloTemp mal ubicado</td><td>0.48 m²</td><td><span class="tag amber">Reproceso</span></td></tr></tbody></table></div></section>
+          </section>
+
+          <section class="view" id="ovenView">
+            <div class="hero-row compact-hero"><div><p class="kicker">Hornos y cortes / <span>aprovechamiento de material</span></p><h2>Material y capacidad<span class="accent-dot">.</span></h2><p class="hero-copy">Lectura de camas, espesores, láminas y tamaños registrados durante el turno.</p></div><div class="date-control"><span class="calendar-icon">▣</span><span>19 Nov 2026</span><span class="chevron">⌄</span></div></div>
+            <div class="material-strip"><div class="material-card"><span class="material-icon oven-icon">◒</span><div><span>Horno 2 · Camas</span><strong>67</strong><small>12 recetas registradas</small></div></div><div class="material-card accent-card"><span class="material-icon">◌</span><div><span>Aprovechamiento promedio</span><strong>42.6%</strong><small>−3.8 pts vs. meta</small></div></div><div class="material-card"><span class="material-icon">▤</span><div><span>Láminas procesadas</span><strong>101</strong><small>37 corte 1 · 64 corte 2</small></div></div></div>
+            <div class="content-grid material-grid"><section class="panel chart-panel large-chart"><div class="panel-header"><div><p class="section-overline">Horno 2</p><h3>Distribución por espesor</h3></div><div class="chart-legend"><span><i class="legend-box blue"></i> Camas</span><span><i class="legend-box purple"></i> Carga</span></div></div><div class="chart-box"><canvas id="ovenChart"></canvas></div></section><section class="panel chart-panel"><div class="panel-header"><div><p class="section-overline">Cortes</p><h3>Tipos de lámina</h3></div></div><div class="chart-box small-chart"><canvas id="cutsChart"></canvas></div><div class="cut-summary"><div><span class="summary-color clear"></span><span>Claro</span><strong>54</strong></div><div><span class="summary-color lowe"></span><span>Low-E</span><strong>43</strong></div><div><span class="summary-color sobrante"></span><span>Sobrante</span><strong>4</strong></div></div></section></div>
+            <section class="panel dimension-panel"><div class="panel-header"><div><p class="section-overline">Corte 1 + Corte 2</p><h3>Formatos más procesados</h3></div><button class="text-button">Ver detalle <span>→</span></button></div><div class="dimension-grid"><div class="dimension-item"><span class="dimension-rank">01</span><div><strong>3600 × 2600</strong><small>Normal · Low-E</small></div><b>45</b></div><div class="dimension-item"><span class="dimension-rank">02</span><div><strong>6100 × 3300</strong><small>Normal</small></div><b>14</b></div><div class="dimension-item"><span class="dimension-rank">03</span><div><strong>5180 × 3300</strong><small>Normal · Low-E</small></div><b>11</b></div><div class="dimension-item"><span class="dimension-rank">04</span><div><strong>3300 × 2438</strong><small>Normal</small></div><b>3</b></div></div></section>
+          </section>
+        </div>
+      </main>
+    </div>
+    <div class="toast" id="toast" role="status"><span class="toast-icon">✓</span><span id="toastMessage">Datos actualizados</span></div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
