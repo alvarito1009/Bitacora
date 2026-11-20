@@ -1,0 +1,28 @@
+# Dependencias y builds
+node_modules/
+dist/
+site/
+.vite/
+
+# Variables y secretos
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Reportes productivos y datos fuente
+*.xlsx
+*.xls
+*.csv
+*.tsv
+*.zip
+/data/
+/raw/
+/reportes/
+
+# Archivos temporales y del sistema
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
